@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blood Bank Management System</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body { background: linear-gradient(135deg, #1A1D2E 0%, #2C2F45 60%, #3D1A18 100%); min-height: 100vh; display: flex; flex-direction: column; }
+    .landing { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; }
+    .hero-icon { font-size: 4rem; margin-bottom: 16px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .hero-title { font-family: var(--font-display); font-size: clamp(2rem,5vw,3.4rem); font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .hero-sub   { color: rgba(255,255,255,0.55); font-size: 1.05rem; max-width: 520px; margin-bottom: 48px; }
+    .role-grid  { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 20px; max-width: 760px; width: 100%; }
+    .role-card  { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 36px 28px; cursor: pointer; transition: all 0.25s ease; color: #fff; text-decoration: none; }
+    .role-card:hover { background: rgba(255,255,255,0.12); transform: translateY(-4px); border-color: rgba(255,255,255,0.25); }
+    .role-card .role-icon { font-size: 2.5rem; margin-bottom: 14px; }
+    .role-card .role-name { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .role-card .role-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    .footer-links { margin-top: 48px; color: rgba(255,255,255,0.35); font-size: 0.85rem; }
+    .footer-links a { color: rgba(255,255,255,0.6); margin: 0 8px; }
+    .footer-links a:hover { color: #fff; }
+    .tagline { display: inline-flex; align-items: center; gap: 6px; background: rgba(192,57,43,0.25); border: 1px solid rgba(192,57,43,0.4); color: #ff8070; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 24px; letter-spacing: 0.08em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div class="landing">
+    <div class="tagline">🩸 Save Lives · Give Blood</div>
+    <div class="hero-icon">💉</div>
+    <h1 class="hero-title">Blood Bank<br>Management System</h1>
+    <p class="hero-sub">A secure, role-based platform for donors, hospitals, and administrators to manage blood donations efficiently.</p>
+
+    <div class="role-grid">
+      <a href="pages/login.html?role=admin" class="role-card">
+        <div class="role-icon">🛡️</div>
+        <div class="role-name">Administrator</div>
+        <div class="role-desc">Manage donors, hospitals, blood stock, and approve requests.</div>
+      </a>
+      <a href="pages/login.html?role=donor" class="role-card">
+        <div class="role-icon">🩸</div>
+        <div class="role-name">Blood Donor</div>
+        <div class="role-desc">Track donations, view your medical info, rewards, and donor card.</div>
+      </a>
+      <a href="pages/login.html?role=hospital" class="role-card">
+        <div class="role-icon">🏥</div>
+        <div class="role-name">Hospital</div>
+        <div class="role-desc">Request blood units, check availability, and track request status.</div>
+      </a>
+    </div>
+
+    <div class="footer-links">
+      New here? &nbsp;
+      <a href="pages/register.html">Create an account</a>
+      &nbsp;·&nbsp;
+      <a href="pages/login.html">Sign in</a>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <div id="toast"></div>
+</body>
+</html>
