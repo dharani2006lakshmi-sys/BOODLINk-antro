@@ -1,23 +1,18 @@
-// ============================================================
 // firebase-init.js — Firebase configuration & initialization
-// Replace firebaseConfig values with YOUR project's config
-// from Firebase Console > Project Settings > Your Apps
-// ============================================================
 
-// ⚠️  REPLACE THESE VALUES with your Firebase project config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD9DjzvAxR_ST_4liqaLM-zngkI1K9AYwk",
+  authDomain: "bloodlink-781c4.firebaseapp.com",
+  projectId: "bloodlink-781c4",
+  storageBucket: "bloodlink-781c4.firebasestorage.app",
+  messagingSenderId: "565462585503",
+  appId: "1:565462585503:web:1d1877ee58066d50ad92aa",
+  measurementId: "G-BSDD3GBZB8"
 };
 
-// Initialize Firebase (using compat SDK for simplicity)
+// Initialize Firebase (compat SDK — works with firebase.auth() / firebase.firestore())
 firebase.initializeApp(firebaseConfig);
 
-// Export commonly used instances
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
@@ -67,16 +62,15 @@ function checkEligibility(medical) {
   const reasons = [];
   if (!medical) return { eligible: false, reasons: ['No medical data found'] };
 
-  const age = parseInt(medical.age);
+  const age    = parseInt(medical.age);
   const weight = parseFloat(medical.weight);
-  const hb = parseFloat(medical.hemoglobin);
+  const hb     = parseFloat(medical.hemoglobin);
 
   if (age < 18 || age > 65)   reasons.push('Age must be 18–65');
   if (weight < 50)             reasons.push('Weight must be at least 50 kg');
   if (hb < 12.5)               reasons.push('Hemoglobin must be ≥ 12.5 g/dL');
   if (medical.activeDiseases)  reasons.push('Active disease condition');
 
-  // Last donation cooldown (56 days / ~2 months)
   if (medical.lastDonationDate) {
     const lastDate = medical.lastDonationDate.toDate
       ? medical.lastDonationDate.toDate()
