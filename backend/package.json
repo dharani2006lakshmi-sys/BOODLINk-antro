@@ -1,0 +1,23 @@
+{
+  "name": "blood-bank-backend",
+  "version": "1.0.0",
+  "description": "Blood Bank Management System — Express.js Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.11.0",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
