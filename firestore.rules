@@ -1,0 +1,76 @@
+// ============================================================
+// firestore.rules — Firebase Firestore Security Rules
+// Deploy with: firebase deploy --only firestore:rules
+// ============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──
+
+    // Check if a user is authenticated
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Get the calling user's role from Firestore
+    function getRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin()    { return isAuth() && getRole() == 'admin'; }
+    function isDonor()    { return isAuth() && getRole() == 'donor'; }
+    function isHospital() { return isAuth() && getRole() == 'hospital'; }
+
+    // Is the calling user the owner of this document?
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    // ── users collection ──
+    match /users/{uid} {
+      allow read:   if isOwner(uid) || isAdmin();
+      allow create: if isAuth() && request.auth.uid == uid;
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── donors collection ──
+    match /donors/{uid} {
+      // Donors can read/write their own; admins can read all
+      allow read:   if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid) || isAdmin();
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── donations collection ──
+    match /donations/{donationId} {
+      // Donor can read their own; admin can read/write all
+      allow read:   if isAdmin()
+                    || (isDonor() && resource.data.donorId == request.auth.uid);
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── bloodStock collection ──
+    match /bloodStock/{group} {
+      // Everyone authenticated can read; only admin can write
+      allow read:   if isAuth();
+      allow write:  if isAdmin();
+    }
+
+    // ── hospitalRequests collection ──
+    match /hospitalRequests/{requestId} {
+      // Hospital can read its own; admin can read all
+      allow read:   if isAdmin()
+                    || (isHospital() && resource.data.hospitalId == request.auth.uid);
+      // Hospital can create; admin can update (approve/reject)
+      allow create: if isHospital();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}
