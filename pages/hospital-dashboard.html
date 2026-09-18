@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hospital Dashboard — Blood Bank</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">
+        <div class="logo-icon">🏥</div>
+        <div class="logo-text">BloodBank <span class="logo-sub">Hospital Portal</span></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showSection('overview',this)"><span class="nav-icon">🏠</span> Overview</div>
+      <div class="nav-item" onclick="showSection('request',this)"><span class="nav-icon">➕</span> New Request</div>
+      <div class="nav-item" onclick="showSection('myrequests',this)"><span class="nav-icon">📋</span> My Requests</div>
+      <div class="nav-item" onclick="showSection('stock',this)"><span class="nav-icon">🗃️</span> Blood Availability</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item logout-btn"><span class="nav-icon">🚪</span> Sign Out</div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-title" id="topbarTitle">Hospital Overview</div>
+      <div class="topbar-right">
+        <span id="hospitalNameTop" style="font-size:0.88rem;color:var(--text-mid);font-weight:600;"></span>
+        <div class="user-avatar" id="userAvatar">H</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ══ OVERVIEW ══ -->
+      <section id="section-overview" class="fade-in">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;">
+          <div class="stat-card" style="--accent-color:#C0392B;--icon-bg:#fdecea;">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value" id="statTotal">—</div>
+            <div class="stat-label">Total Requests</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#F39C12;--icon-bg:#fef9e7;">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-value" id="statPending">—</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#27AE60;--icon-bg:#eafaf1;">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="statApproved">—</div>
+            <div class="stat-label">Approved</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#E74C3C;--icon-bg:#fdedec;">
+            <div class="stat-icon">❌</div>
+            <div class="stat-value" id="statRejected">—</div>
+            <div class="stat-label">Rejected</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3>Recent Requests</h3><button class="btn btn-outline btn-sm" onclick="showSection('myrequests',null)">View All</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Blood Group</th><th>Units</th><th>Priority</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="overviewRequestsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ NEW REQUEST ══ -->
+      <section id="section-request" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">Request Blood</h2>
+        <div class="card" style="max-width:560px;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Blood Group *</label>
+              <select class="form-control" id="reqBloodGroup">
+                <option value="">Select…</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Units Required *</label>
+              <input class="form-control" type="number" id="reqUnits" min="1" max="20" value="1" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority Level *</label>
+            <select class="form-control" id="reqPriority">
+              <option value="normal">🔵 Normal</option>
+              <option value="urgent">🟠 Urgent</option>
+              <option value="emergency">🚨 Emergency</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reason / Patient Info</label>
+            <textarea class="form-control" id="reqReason" rows="3" placeholder="e.g. Surgery for patient John Doe, 45M"></textarea>
+          </div>
+          <div id="stockAvailability" style="margin-bottom:16px;"></div>
+          <button class="btn btn-primary" onclick="checkStock()">Check Availability</button>
+          &nbsp;
+          <button class="btn btn-success" onclick="submitRequest()">Submit Request</button>
+        </div>
+      </section>
+
+      <!-- ══ MY REQUESTS ══ -->
+      <section id="section-myrequests" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">My Blood Requests</h2>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Blood Group</th><th>Units</th><th>Priority</th><th>Reason</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="myRequestsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ STOCK ══ -->
+      <section id="section-stock" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">Blood Availability</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;" id="availabilityGrid"></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../js/firebase-init.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/hospital.js"></script>
+</body>
+</html>

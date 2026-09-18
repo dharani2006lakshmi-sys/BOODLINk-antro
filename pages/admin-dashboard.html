@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Blood Bank</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+<div class="layout">
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">
+        <div class="logo-icon">🩸</div>
+        <div class="logo-text">BloodBank <span class="logo-sub">Admin Panel</span></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" onclick="showSection('overview',this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="nav-section-label">Management</div>
+      <div class="nav-item" onclick="showSection('donors',this)">
+        <span class="nav-icon">🩸</span> Donors
+      </div>
+      <div class="nav-item" onclick="showSection('hospitals',this)">
+        <span class="nav-icon">🏥</span> Hospitals
+      </div>
+      <div class="nav-item" onclick="showSection('requests',this)">
+        <span class="nav-icon">📋</span> Blood Requests
+        <span id="pendingBadge" class="badge badge-danger" style="margin-left:auto;display:none;">0</span>
+      </div>
+      <div class="nav-item" onclick="showSection('stock',this)">
+        <span class="nav-icon">🗃️</span> Blood Stock
+      </div>
+      <div class="nav-item" onclick="showSection('donations',this)">
+        <span class="nav-icon">💉</span> Donations
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item logout-btn">
+        <span class="nav-icon">🚪</span> Sign Out
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard Overview</div>
+      <div class="topbar-right">
+        <span id="adminName" style="font-size:0.88rem;color:var(--text-mid);font-weight:600;"></span>
+        <div class="user-avatar" id="userAvatar">A</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ══ OVERVIEW ══ -->
+      <section id="section-overview" class="fade-in">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:28px;">
+          <div class="stat-card" style="--accent-color:#C0392B;--icon-bg:#fdecea;">
+            <div class="stat-icon">🩸</div>
+            <div class="stat-value" id="statDonors">—</div>
+            <div class="stat-label">Total Donors</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#2980B9;--icon-bg:#eaf4fd;">
+            <div class="stat-icon">🏥</div>
+            <div class="stat-value" id="statHospitals">—</div>
+            <div class="stat-label">Hospitals</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#27AE60;--icon-bg:#eafaf1;">
+            <div class="stat-icon">💉</div>
+            <div class="stat-value" id="statDonations">—</div>
+            <div class="stat-label">Total Donations</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#F39C12;--icon-bg:#fef9e7;">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value" id="statPending">—</div>
+            <div class="stat-label">Pending Requests</div>
+          </div>
+        </div>
+
+        <!-- Blood Stock Summary -->
+        <div class="card">
+          <div class="card-header"><h3>🗃️ Blood Stock Overview</h3></div>
+          <div id="stockGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px;"></div>
+        </div>
+
+        <!-- Recent Requests -->
+        <div class="card" style="margin-top:20px;">
+          <div class="card-header">
+            <h3>🚨 Recent Requests</h3>
+            <button class="btn btn-outline btn-sm" onclick="showSection('requests',null)">View All</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Hospital</th><th>Blood Group</th><th>Units</th><th>Priority</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="recentRequestsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ DONORS ══ -->
+      <section id="section-donors" class="fade-in hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h2>Blood Donors</h2>
+          <input class="form-control" type="search" id="donorSearch" placeholder="🔍 Search donors…" style="max-width:250px;" />
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Blood Group</th><th>Phone</th><th>Donations</th><th>Points</th><th>Category</th><th>Eligible</th></tr></thead>
+              <tbody id="donorsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ HOSPITALS ══ -->
+      <section id="section-hospitals" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">Registered Hospitals</h2>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th><th>Requests Made</th></tr></thead>
+              <tbody id="hospitalsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ REQUESTS ══ -->
+      <section id="section-requests" class="fade-in hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h2>Blood Requests</h2>
+          <select class="form-control" id="requestFilter" style="max-width:180px;" onchange="loadRequests()">
+            <option value="all">All Requests</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Hospital</th><th>Blood Group</th><th>Units</th><th>Priority</th><th>Reason</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="requestsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ STOCK ══ -->
+      <section id="section-stock" class="fade-in hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h2>Blood Stock Management</h2>
+          <button class="btn btn-primary" onclick="openStockModal()">+ Update Stock</button>
+        </div>
+        <div class="card">
+          <div id="stockTable"></div>
+        </div>
+      </section>
+
+      <!-- ══ DONATIONS ══ -->
+      <section id="section-donations" class="fade-in hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h2>Donation Records</h2>
+          <button class="btn btn-primary" onclick="openAddDonationModal()">+ Record Donation</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Donor</th><th>Blood Group</th><th>Units</th><th>Hospital</th><th>Date</th><th>Points</th></tr></thead>
+              <tbody id="donationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /page-content -->
+  </div><!-- /main-content -->
+</div><!-- /layout -->
+
+<!-- ── Modals ── -->
+
+<!-- Update Stock -->
+<div class="modal-overlay hidden" id="stockModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Update Blood Stock</h3>
+      <button class="modal-close" onclick="closeModal('stockModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Blood Group</label>
+      <select class="form-control" id="stockGroup">
+        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Units (enter absolute value)</label>
+      <input class="form-control" type="number" id="stockUnits" min="0" placeholder="e.g. 25" />
+    </div>
+    <button class="btn btn-primary btn-full" onclick="updateStock()">Update Stock</button>
+  </div>
+</div>
+
+<!-- Record Donation -->
+<div class="modal-overlay hidden" id="addDonationModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Record New Donation</h3>
+      <button class="modal-close" onclick="closeModal('addDonationModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Donor Email</label>
+      <input class="form-control" type="email" id="donationDonorEmail" placeholder="donor@email.com" />
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Blood Group</label>
+        <select class="form-control" id="donationBloodGroup">
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Units</label>
+        <input class="form-control" type="number" id="donationUnits" value="1" min="1" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hospital / Location</label>
+      <input class="form-control" type="text" id="donationHospital" placeholder="City Hospital" />
+    </div>
+    <button class="btn btn-primary btn-full" onclick="recordDonation()">Record Donation</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../js/firebase-init.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

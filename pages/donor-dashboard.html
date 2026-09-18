@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donor Dashboard — Blood Bank</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+<div class="layout">
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">
+        <div class="logo-icon">🩸</div>
+        <div class="logo-text">BloodBank <span class="logo-sub">Donor Portal</span></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showSection('overview',this)"><span class="nav-icon">🏠</span> Overview</div>
+      <div class="nav-item" onclick="showSection('profile',this)"><span class="nav-icon">👤</span> My Profile</div>
+      <div class="nav-item" onclick="showSection('medical',this)"><span class="nav-icon">🏥</span> Medical Details</div>
+      <div class="nav-item" onclick="showSection('history',this)"><span class="nav-icon">💉</span> Donation History</div>
+      <div class="nav-item" onclick="showSection('card',this)"><span class="nav-icon">🪪</span> Donor Card</div>
+      <div class="nav-item" onclick="showSection('rewards',this)"><span class="nav-icon">🏆</span> Rewards</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item logout-btn"><span class="nav-icon">🚪</span> Sign Out</div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-title" id="topbarTitle">Donor Overview</div>
+      <div class="topbar-right">
+        <span id="donorNameTop" style="font-size:0.88rem;color:var(--text-mid);font-weight:600;"></span>
+        <div class="user-avatar" id="userAvatar">D</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ══ OVERVIEW ══ -->
+      <section id="section-overview" class="fade-in">
+        <div id="eligibilityAlert"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;">
+          <div class="stat-card" style="--accent-color:#C0392B;--icon-bg:#fdecea;">
+            <div class="stat-icon">💉</div>
+            <div class="stat-value" id="statTotalDonations">—</div>
+            <div class="stat-label">Total Donations</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#F39C12;--icon-bg:#fef9e7;">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="statPoints">—</div>
+            <div class="stat-label">Reward Points</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#8E44AD;--icon-bg:#f5eef8;">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value" id="statCategory" style="font-size:1.3rem;">—</div>
+            <div class="stat-label">Tier Category</div>
+          </div>
+          <div class="stat-card" style="--accent-color:#2980B9;--icon-bg:#eaf4fd;">
+            <div class="stat-icon">🩸</div>
+            <div class="stat-value" id="statBloodGroup">—</div>
+            <div class="stat-label">Blood Group</div>
+          </div>
+        </div>
+
+        <!-- Recent Donations -->
+        <div class="card">
+          <div class="card-header"><h3>Recent Donations</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Blood Group</th><th>Units</th><th>Hospital</th><th>Points Earned</th></tr></thead>
+              <tbody id="recentDonationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PROFILE ══ -->
+      <section id="section-profile" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">My Profile</h2>
+        <div class="card" style="max-width:560px;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input class="form-control" id="profileName" type="text" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-control" id="profilePhone" type="tel" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email (read-only)</label>
+            <input class="form-control" id="profileEmail" type="email" readonly style="background:#f5f6fa;" />
+          </div>
+          <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+        </div>
+      </section>
+
+      <!-- ══ MEDICAL ══ -->
+      <section id="section-medical" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">Medical Details</h2>
+        <div class="card" style="max-width:600px;">
+          <p style="margin-bottom:20px;">This information determines your blood donation eligibility.</p>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Blood Group *</label>
+              <select class="form-control" id="medBloodGroup">
+                <option value="">Select…</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age (years) *</label>
+              <input class="form-control" type="number" id="medAge" min="1" max="100" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Weight (kg) *</label>
+              <input class="form-control" type="number" id="medWeight" min="1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hemoglobin (g/dL) *</label>
+              <input class="form-control" type="number" id="medHemoglobin" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Blood Pressure (e.g. 120/80)</label>
+              <input class="form-control" type="text" id="medBP" placeholder="120/80" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Donation Date</label>
+              <input class="form-control" type="date" id="medLastDonation" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Known Diseases / Conditions</label>
+            <input class="form-control" type="text" id="medDiseases" placeholder="e.g. Hypertension, Diabetes (leave blank if none)" />
+          </div>
+          <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="medActiveDiseases" />
+            <label for="medActiveDiseases" style="font-size:0.9rem;color:var(--text-mid);">I currently have an active medical condition</label>
+          </div>
+          <button class="btn btn-primary" onclick="saveMedical()">Save Medical Info</button>
+          <div id="eligibilityResult" style="margin-top:16px;"></div>
+        </div>
+      </section>
+
+      <!-- ══ HISTORY ══ -->
+      <section id="section-history" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">Donation History</h2>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Date</th><th>Blood Group</th><th>Units</th><th>Hospital</th><th>Points</th><th>Card</th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ DONOR CARD ══ -->
+      <section id="section-card" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">My Donor Card</h2>
+        <div id="donorCardContainer"></div>
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <button class="btn btn-primary" onclick="downloadDonorCard()">⬇️ Download Card</button>
+        </div>
+      </section>
+
+      <!-- ══ REWARDS ══ -->
+      <section id="section-rewards" class="fade-in hidden">
+        <h2 style="margin-bottom:20px;">Reward System</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px;">
+          <div class="card" style="text-align:center;border-top:4px solid var(--bronze);">
+            <div style="font-size:2.5rem;margin-bottom:8px;">🥉</div>
+            <h3 style="color:var(--bronze);">Bronze</h3>
+            <p>1–2 donations</p>
+            <p style="font-size:0.83rem;margin-top:8px;">Entry tier. Keep donating!</p>
+          </div>
+          <div class="card" style="text-align:center;border-top:4px solid var(--silver);">
+            <div style="font-size:2.5rem;margin-bottom:8px;">🥈</div>
+            <h3 style="color:var(--silver);">Silver</h3>
+            <p>3–5 donations</p>
+            <p style="font-size:0.83rem;margin-top:8px;">Regular hero donor.</p>
+          </div>
+          <div class="card" style="text-align:center;border-top:4px solid var(--gold);">
+            <div style="font-size:2.5rem;margin-bottom:8px;">🥇</div>
+            <h3 style="color:#b8860b;">Gold</h3>
+            <p>6+ donations</p>
+            <p style="font-size:0.83rem;margin-top:8px;">Elite lifesaver status!</p>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="margin-bottom:16px;">Your Progress</h3>
+          <div id="rewardsProgress"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../js/firebase-init.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/donor-card.js"></script>
+<script src="../js/donor.js"></script>
+</body>
+</html>

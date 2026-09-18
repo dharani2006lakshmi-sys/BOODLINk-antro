@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register — Blood Bank</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    body { background: linear-gradient(135deg,#1A1D2E 0%,#2C2F45 60%,#3D1A18 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+    .auth-wrap { width:100%; max-width:500px; }
+    .auth-card { background:#fff; border-radius:24px; padding:40px 36px; box-shadow:0 24px 64px rgba(0,0,0,0.25); }
+    .auth-logo  { text-align:center; margin-bottom:28px; }
+    .auth-logo .logo-icon { width:56px;height:56px;background:var(--red-primary);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:12px; }
+    .auth-footer { text-align:center;margin-top:20px;font-size:0.88rem;color:var(--text-light); }
+    .auth-footer a { color:var(--red-primary);font-weight:600; }
+  </style>
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon">🩸</div>
+        <h2>Create Account</h2>
+        <p style="color:var(--text-light);font-size:0.88rem;margin-top:4px;">Join the Blood Bank network</p>
+      </div>
+
+      <div id="alertBox"></div>
+
+      <form id="registerForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="regName">Full Name *</label>
+            <input class="form-control" type="text" id="regName" placeholder="John Doe" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regPhone">Phone Number</label>
+            <input class="form-control" type="tel" id="regPhone" placeholder="+91 98765 43210" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Email Address *</label>
+          <input class="form-control" type="email" id="regEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Password *</label>
+          <input class="form-control" type="password" id="regPassword" placeholder="Min. 6 characters" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regRole">I am registering as *</label>
+          <select class="form-control" id="regRole" required>
+            <option value="">— Select Role —</option>
+            <option value="donor">🩸 Blood Donor</option>
+            <option value="hospital">🏥 Hospital / Blood Bank</option>
+            <option value="admin">🛡️ Administrator</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg" style="margin-top:8px;">Create Account</button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-init.js"></script>
+  <script src="../js/auth.js"></script>
+  <div id="toast"></div>
+</body>
+</html>

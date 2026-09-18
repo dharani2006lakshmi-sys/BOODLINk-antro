@@ -1,0 +1,45 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "donations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "donorId",   "order": "ASCENDING" },
+        { "fieldPath": "donatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "hospitalRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "hospitalId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt",  "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "hospitalRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status",    "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "hospitalRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "priority",  "order": "ASCENDING" },
+        { "fieldPath": "status",    "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "donors",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "totalDonations", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
